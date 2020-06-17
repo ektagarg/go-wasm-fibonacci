@@ -5,7 +5,9 @@ import (
 	"log"
 	"reflect"
 	"runtime"
+	"strconv"
 	"syscall/js"
+	"time"
 	"unsafe"
 )
 
@@ -21,16 +23,23 @@ func main() {
 }
 
 func fibonacci(this js.Value, args []js.Value) interface{} {
-	// convert js.value to go integer
-	n := args[0].Int()
+	doc := js.Global().Get("document")
+	value1 := doc.Call("getElementById", args[0].String()).Get("value").String()
+	n, _ := strconv.Atoi(value1)
 	num := float64(n)
 
-	result := fib(num)
-	final := intToFloat64(result)
-	return final
+	result, timeTook := fib(num)
+	// convert time to flaot
+	finalResult := float64ToJs(result)
+
+	doc.Call("getElementById", args[1].String()).Set("value", finalResult)
+	doc.Call("getElementById", args[2].String()).Set("innerHTML", timeTook.String())
+
+	return finalResult
 }
 
-func fib(n float64) []float64 {
+func fib(n float64) ([]float64, time.Duration) {
+	start := time.Now()
 	var t1, t2, nextTerm, i float64
 	t1 = 0
 	t2 = 1
@@ -51,11 +60,11 @@ func fib(n float64) []float64 {
 		t2 = nextTerm
 		a = append(a, nextTerm)
 	}
-	return a
+	return a, time.Since(start)
 }
 
-// intToFloat64 is converting []uint64 to a new javascript Int32Array.
-func intToFloat64(s []float64) js.Value {
+// float64ToJs is converting []uint64 to a new javascript js.Value.
+func float64ToJs(s []float64) js.Value {
 	a := js.Global().Get("Uint8Array").New(len(s) * 8)
 	js.CopyBytesToJS(a, sliceToByteSlice(s))
 	runtime.KeepAlive(s)

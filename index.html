@@ -8,9 +8,28 @@ license that can be found in the LICENSE file.
   <head>
     <meta charset="utf-8" />
     <title>Go wasm</title>
+    <style>
+      #input{
+        margin: 5px;
+        padding: 5px;
+      }
+      #fibButton{
+        margin: 5px;
+      }
+      #result{
+        width: 500px;
+        padding: 40px; 
+        margin: 5px;
+      }
+      #value1{
+        padding: 5px;
+        margin: 5px;
+      }
+    </style>
   </head>
+  
 
-  <body>
+  <body style="background-color: #a7e0e0">
     <script src="wasm_exec.js"></script>
 
     <script>
@@ -27,19 +46,27 @@ license that can be found in the LICENSE file.
       let mod, inst;
 
       WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then(
-        result => {
+        async result => {
           mod = result.module;
           inst = result.instance;
-          document.getElementById("runButton").disabled = false;
+          await go.run(inst);
         }
-      );
+      ); 
 
-      async function run() {
-        await go.run(inst);
-        inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
-      }
     </script>
-
-    <button onClick="run();" id="runButton">Run</button>
+    <h2>WASM + GO [Fibonacci Series Demo]</h2>
+    <div>
+      <label style="margin: 5px">Enter Number: </label><br>
+      <input type="text" id="input">
+    </div><br/>
+    
+    <div>
+      <button onClick="fibonacci('input', 'result', 'timetaken');" id="fibButton">Get Fibonacci Series</button></br>
+      <textarea rows="20" id="result"></textarea>
+    </div>
+    <h3>
+      Total time took: 
+      <span id="timetaken"></span>
+    </h3>
   </body>
 </html>
