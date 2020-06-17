@@ -9,6 +9,13 @@ license that can be found in the LICENSE file.
     <meta charset="utf-8" />
     <title>Go wasm</title>
     <style>
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
       #input{
         margin: 5px;
         padding: 5px;
@@ -54,19 +61,21 @@ license that can be found in the LICENSE file.
       ); 
 
     </script>
-    <h2>WASM + GO [Fibonacci Series Demo]</h2>
-    <div>
-      <label style="margin: 5px">Enter Number: </label><br>
-      <input type="text" id="input">
-    </div><br/>
-    
-    <div>
-      <button onClick="fibonacci('input', 'result', 'timetaken');" id="fibButton">Get Fibonacci Series</button></br>
-      <textarea rows="20" id="result"></textarea>
+    <div class="container">
+        <h2>WASM + GO [Fibonacci Series Demo]</h2>
+        <div>
+          <label style="margin: 5px">Enter Number: </label><br>
+          <input type="text" id="input">
+        </div><br/>
+        
+        <div class="container" >
+          <button onClick="fibonacci('input', 'result', 'timetaken');" id="fibButton">Get Fibonacci Series</button></br>
+          <textarea rows="20" id="result"></textarea>
+        </div>
+        <h3>
+          Total time took: 
+          <span id="timetaken"></span>
+        </h3>
     </div>
-    <h3>
-      Total time took: 
-      <span id="timetaken"></span>
-    </h3>
   </body>
 </html>
